@@ -28,8 +28,7 @@ all_rgb = [
     [135, 206, 235]
 ]
 
-website_path = Path('website')
-
+public_path = Path('public')
 
 def process_domain(xlsx_path: Path):
 
@@ -50,7 +49,7 @@ def process_domain(xlsx_path: Path):
 
     pm(f'spectrum count, rainbow, {domain}')
     pm('ray 300, 300')
-    thumbnail_path = (website_path / 'public' / 'thumbnail' / f'{domain}.png').absolute()
+    thumbnail_path = (public_path / 'thumbnail' / f'{domain}.png').absolute()
     pm(f'png {thumbnail_path}')
 
     wb: Database = readxl(xlsx_path)
@@ -85,10 +84,10 @@ def process_domain(xlsx_path: Path):
     pm(f'set cartoon_transparency, 0.5, {domain}')
 
     pm(f'disable all; enable (model {domain} or Mode-1)')
-    pymol_path = (website_path / 'public' / 'pymol' / f'{domain}.pse').absolute()
+    pymol_path = (public_path / 'pymol' / f'{domain}.pse').absolute()
     pm(f'save {pymol_path}')
 
-    shutil.copyfile(pdb_path, website_path / 'public' / 'pdb' / pdb_path.parts[-1])
+    shutil.copyfile(pdb_path, public_path / 'pdb' / pdb_path.parts[-1])
 
     return {
         'domain': domain,
@@ -102,4 +101,4 @@ def process_domain(xlsx_path: Path):
 if __name__ == '__main__':
     xlsx_paths = list(Path('domaingroups').glob('*/[!~]*.xlsx'))
     view_data = process_map(process_domain, xlsx_paths, max_workers=12)
-    json.dump(view_data, open(website_path / 'src' / 'assets' / 'domains.json', 'wt'))
+    json.dump(view_data, open(Path('src') / 'assets' / 'domains.json', 'wt'))
