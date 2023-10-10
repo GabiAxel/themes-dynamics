@@ -1,7 +1,10 @@
 <script>
   export let domainId
 
+  import { chain } from 'lodash'
+  import * as NGL from 'ngl'
   import domains from '../assets/domains.json'
+
   let domain = domains.find(d => d.domain === domainId)
 
   const createProtvistaPdbComponent = (node, domainId) => {
@@ -23,7 +26,7 @@
           label: `Mode ${i + 1}`,
           type: '',
           locations: [{
-            fragments: mode.filter(mode => mode[1] > 0).map(([start, end], j) => ({
+            fragments: mode.map(([start, end], j) => ({
               start,
               end,
               color: j % 2 == 0 ? 'red' : 'blue',
@@ -55,43 +58,71 @@
 
   }
 
-  let pdbeMolstar
+  let stage
+  let modeRepresentation
+  let themeRepresentations
+
+  const loadStructure = (domainId) => {
+    themeRepresentations = {}
+
+    const colorScheme = NGL.ColormakerRegistry.addSelectionScheme([
+      ['blue', chain(domain.modes[0]).filter((_, i) => i % 2 === 0).map(([start, end]) => `${start}-${end}`).join(' or ').value(), undefined],
+      ['red', '*', undefined]
+    ])
+
+    stage.loadFile(`pdb/${domainId}.pdb`)
+      .then(o => {
+        modeRepresentation = o.addRepresentation('cartoon', { color: colorScheme })
+        o.autoView()
+      })
+  }
 
   const viewStructure = (node, domainId) => {
-    pdbeMolstar = new PDBeMolstarPlugin()
-    pdbeMolstar.render(node, {
-      customData: {
-        url: `pdb/${domainId}.pdb`,
-        format: 'pdb'
-      },
-      hideControls: true,
-      hideCanvasControls: ['expand', 'selection', 'animation', 'controlToggle', 'controlInfo'],
-      bgColor: {r: 229, g: 231, b: 235}
-    })
+
+    stage = new NGL.Stage(node, { backgroundColor: '#e2e8f0'})
+    loadStructure(domainId)
+
     return {
       update(domainId) {
-        pdbeMolstar.load({
-          url: `pdb/${domainId}.pdb`,
-          format: 'pdb'
-        }, true)
+        stage.removeAllComponents()
+        loadStructure(domainId)
       }
     }
+
   }
 
   const selectFragment = ({detail}) => {
-    pdbeMolstar.visual.select({
-      data: [{
-        start_residue_number: Math.max(1, detail.start),
-        end_residue_number: detail.end
-      }]})
+    if(detail.feature.label.startsWith('Mode ')) {
+
+      stage.compList[0].removeRepresentation(modeRepresentation)
+
+      const colorScheme = NGL.ColormakerRegistry.addSelectionScheme([
+        ['blue', chain(detail.feature.locations[0].fragments).filter({ color: 'blue' }).map(({start, end}) => `${start}-${end}`).join(' or ').value(), undefined],
+        ['red', '*', undefined]
+      ])
+
+      modeRepresentation = stage.compList[0].addRepresentation('cartoon', { color: colorScheme })
+    } else {
+      const { label, start, end } = detail.feature
+
+      let themeRepresentation = themeRepresentations[label]
+      if(themeRepresentation) {
+        stage.compList[0].removeRepresentation(themeRepresentation)
+        delete themeRepresentations[label]
+      } else {
+        themeRepresentation = stage.compList[0].addRepresentation('rope', { radiusScale: 3, colorScheme: 'uniform', color: 'yellowgreen', sele: `${start}-${end}` })
+        themeRepresentations[label] = themeRepresentation
+      }
+    }
+
   }
 
   const highlightFragment = ({detail}) => {
-    pdbeMolstar.visual.highlight({
-      data: [{
-        start_residue_number: Math.max(1, detail.start),
-        end_residue_number: detail.end
-      }]})
+    // pdbeMolstar.visual.highlight({
+    //   data: [{
+    //     start_residue_number: Math.max(1, detail.start),
+    //     end_residue_number: detail.end
+    //   }]})
   }
 
 </script>
@@ -101,17 +132,21 @@
     width: 700px;
     height: 500px;
   }
-  .pdbe-molstar-wrapper {
+  .ngl-wrapper {
       position: relative;
       width: 500px;
       height: 500px;
   }
+
 </style>
 
 <div class="pt-4 pl-4 max-h-screen overflow-auto">
   <div class="flex justify-between">
     <a href="#/" class="border border-gray-400 bg-gray-400/50 hover:bg-gray-300 px-4 py-2 rounded-md">« All Domains</a>
-    <a href={`pymol/${domain.domain}.pse`} target="_blank" class="text-gray-100 border border-green-700 bg-green-700 hover:bg-green-600 px-4 py-2 rounded-md">↓ Download PyMOL Session</a>
+    <div class="flex space-x-2">
+      <a href={`xlsx/${domain.domain}_results.xlsx`} target="_blank" class="download_button">↓ Download Analysis Results</a>
+      <a href={`pymol/${domain.domain}.pse`} target="_blank" class="download_button">↓ Download PyMOL Session</a>
+    </div>
   </div>
   <h1 class="text-2xl my-4">{domain.group} / {domain.domain}</h1>
   <div class="flex flex-row">
@@ -119,13 +154,13 @@
       <div use:viewTracks={domainId}
            on:protvista-click={selectFragment}
            on:protvista-mouseover={highlightFragment}
-           on:protvista-mouseout={pdbeMolstar.visual.clearHighlight}
+
            class="pdbe-protvista-wrapper"
       ></div>
     </div>
     <div>
       <div use:viewStructure={domainId}
-           class="pdbe-molstar-wrapper"
+           class="ngl-wrapper"
       ></div>
     </div>
   </div>

@@ -11,7 +11,9 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "autoprefixer": "^10.4.14",
+    "litemol": "^2.4.2",
     "lodash": "^4.17.21",
+    "ngl": "^2.1.1",
     "postcss": "^8.4.24",
     "postcss-load-config": "^4.0.1",
     "svelte": "^4.0.5",

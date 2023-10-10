@@ -38,7 +38,7 @@ def process_domain(xlsx_path: Path):
     pdb_path = dir / f'{domain}.pdb'
 
     structure = load_structure(str(pdb_path))
-    length = int(chain(structure).map('res_id').max().value())
+    length = int(chain(structure).filter({'hetero': False}).map('res_id').max().value())
 
     pm = pymolPy3(0)
 
@@ -88,6 +88,7 @@ def process_domain(xlsx_path: Path):
     pm(f'save {pymol_path}')
 
     shutil.copyfile(pdb_path, public_path / 'pdb' / pdb_path.parts[-1])
+    shutil.copyfile(xlsx_path, public_path / 'xlsx' / xlsx_path.parts[-1])
 
     return {
         'domain': domain,
