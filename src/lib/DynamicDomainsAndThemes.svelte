@@ -7,6 +7,11 @@
 
   let domain = domains.find(d => d.domain === domainId)
 
+  let stage
+  let modeRepresentation
+  let themeRepresentations
+  let modeLabel
+
   const createProtvistaPdbComponent = (node, domainId) => {
     domain = domains.find(d => d.domain === domainId)
     if (!domain) {
@@ -58,11 +63,8 @@
 
   }
 
-  let stage
-  let modeRepresentation
-  let themeRepresentations
-
   const loadStructure = (domainId) => {
+    modeLabel = 'Mode 1'
     themeRepresentations = {}
 
     const colorScheme = NGL.ColormakerRegistry.addSelectionScheme([
@@ -78,7 +80,6 @@
   }
 
   const viewStructure = (node, domainId) => {
-
     stage = new NGL.Stage(node, { backgroundColor: '#e2e8f0'})
     loadStructure(domainId)
 
@@ -88,12 +89,11 @@
         loadStructure(domainId)
       }
     }
-
   }
 
   const selectFragment = ({detail}) => {
     if(detail.feature.label.startsWith('Mode ')) {
-
+      modeLabel = detail.feature.label
       stage.compList[0].removeRepresentation(modeRepresentation)
 
       const colorScheme = NGL.ColormakerRegistry.addSelectionScheme([
@@ -116,15 +116,6 @@
     }
 
   }
-
-  const highlightFragment = ({detail}) => {
-    // pdbeMolstar.visual.highlight({
-    //   data: [{
-    //     start_residue_number: Math.max(1, detail.start),
-    //     end_residue_number: detail.end
-    //   }]})
-  }
-
 </script>
 
 <style>
@@ -151,17 +142,11 @@
   <h1 class="text-2xl my-4">{domain.group} / {domain.domain}</h1>
   <div class="flex flex-row">
     <div>
-      <div use:viewTracks={domainId}
-           on:protvista-click={selectFragment}
-           on:protvista-mouseover={highlightFragment}
-
-           class="pdbe-protvista-wrapper"
-      ></div>
+      <div use:viewTracks={domainId} on:protvista-click={selectFragment} class="pdbe-protvista-wrapper"></div>
     </div>
-    <div>
-      <div use:viewStructure={domainId}
-           class="ngl-wrapper"
-      ></div>
+    <div class="relative">
+      <div class="absolute top-4 left-4 z-10 text-xl">{modeLabel}</div>
+      <div use:viewStructure={domainId} class="ngl-wrapper"></div>
     </div>
   </div>
 </div>
