@@ -4,6 +4,7 @@
   import { chain } from 'lodash'
   import * as NGL from 'ngl'
   import domains from '../assets/domains.json'
+  import pfam from '../assets/pfam.json'
 
   let domain = domains.find(d => d.domain === domainId)
 
@@ -48,6 +49,15 @@
             fragments: [{ start, end, color: 'yellowgreen', tooltipContent: theme }]
           }]
         }))
+      }, {
+        label: 'Pfam',
+        data: domainId in pfam ? pfam[domainId].map(([pfam, start, end]) => ({
+          label: pfam,
+          type: '',
+          locations: [{
+            fragments: [{ start: start + domain.modes[0][0][0] - 1, end: end + domain.modes[0][0][0] - 1, color: 'orchid', tooltipContent: pfam }]
+          }]
+        })) : []
       }]
     }
   }
@@ -110,7 +120,8 @@
         stage.compList[0].removeRepresentation(themeRepresentation)
         delete themeRepresentations[label]
       } else {
-        themeRepresentation = stage.compList[0].addRepresentation('rope', { radiusScale: 3, colorScheme: 'uniform', color: 'yellowgreen', sele: `${start}-${end}` })
+        const { color } = detail.feature.locations[0].fragments[0]
+        themeRepresentation = stage.compList[0].addRepresentation('rope', { radiusScale: 3, colorScheme: 'uniform', color, sele: `${start}-${end}` })
         themeRepresentations[label] = themeRepresentation
       }
     }

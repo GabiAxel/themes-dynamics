@@ -1,7 +1,7 @@
 <script>
   import domains from './assets/domains.json'
   import DomainListPage from './lib/DomainListPage.svelte'
-  import DomainPage from "./lib/DomainPage.svelte";
+  import DomainPage from './lib/DomainPage.svelte'
 
   const validTokens = ['/', ...domains.map(({domain}) => `/${domain}`)]
 
