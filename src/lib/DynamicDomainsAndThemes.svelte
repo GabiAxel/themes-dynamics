@@ -145,28 +145,30 @@
 
 </style>
 
-<div class="pt-4 pl-4 max-h-screen overflow-auto">
-  <div class="flex justify-between">
-    <a href="#/" class="border border-gray-400 bg-gray-400/50 hover:bg-gray-300 px-4 py-2 rounded-md">« All Domains</a>
-    <div class="flex space-x-2">
-      <a href={`xlsx/${domain.domain}_results.xlsx`} target="_blank" class="download_button">↓ Download Analysis Results</a>
-      <a href={`pymol/${domain.domain}.pse`} target="_blank" class="download_button">↓ Download PyMOL Session</a>
+<div class="pt-4 px-4 max-h-screen overflow-auto flex-auto">
+  <div class="container">
+    <div class="flex justify-between">
+      <a href="#/" class="border border-gray-400 bg-gray-400/50 hover:bg-gray-300 px-4 py-2 rounded-md">« All Domains</a>
+      <div class="flex space-x-2">
+        <a href={`xlsx/${domain.domain}_results.xlsx`} target="_blank" class="download_button">↓ Download Analysis Results</a>
+        <a href={`pymol/${domain.domain}.pse`} target="_blank" class="download_button">↓ Download PyMOL Session</a>
+      </div>
     </div>
-  </div>
-  <h1 class="text-2xl my-4">{domain.group} / {domain.domain}</h1>
-  <p class="my-10">
-    The panel on the left shows bars representing the <strong class="text-red-700">dynamic</strong> <strong class="text-blue-700">domains</strong> for each mode, <strong class="text-green-700">themes</strong> and <strong class="text-fuchsia-500">Pfam annotations</strong> along the ECOD domain sequence.<br/><br/>
-    The 3D representation on the right initially shows the dynamic domains for Mode 1. Click on the <strong class="text-red-700">dynamic</strong> <strong class="text-blue-700">domain</strong> bar of any other mode to update the 3D representation to that mode.<br/><br/>
-    Click on any bar representing any <strong class="text-green-700">theme</strong> or <strong class="text-fuchsia-500">Pfam annotation</strong> to toggle it on or off in the 3D representation.<br/><br/>
-    Use the left mouse button to rotate the 3D representation, the right mouse button to pan, to the mouse wheel to zoom in and out.
-  </p>
-  <div class="flex flex-row">
-    <div>
-      <div use:viewTracks={domainId} on:protvista-click={selectFragment} class="pdbe-protvista-wrapper"></div>
-    </div>
-    <div class="relative">
-      <div class="absolute top-4 left-4 z-10 text-xl">{modeLabel}</div>
-      <div use:viewStructure={domainId} class="ngl-wrapper"></div>
+    <h1 class="text-2xl my-4">{domain.group} / {domain.domain}</h1>
+    <p class="my-10">
+      The panel on the left shows bars representing the <strong class="text-red-700">dynamic</strong> <strong class="text-blue-700">domains</strong> for each mode, <strong class="text-green-700">themes</strong> and <strong class="text-fuchsia-600">Pfam annotations</strong> along the ECOD domain sequence.<br/><br/>
+      The 3D representation on the right initially shows the dynamic domains for Mode 1. Click on the <strong class="text-red-700">dynamic</strong> <strong class="text-blue-700">domain</strong> bar of any other mode to update the 3D representation to that mode.<br/><br/>
+      Click on any bar representing any <strong class="text-green-700">theme</strong> or <strong class="text-fuchsia-600">Pfam annotation</strong> to toggle it on or off in the 3D representation.<br/><br/>
+      Use the left mouse button to rotate the 3D representation, the right mouse button to pan, to the mouse wheel to zoom in and out.
+    </p>
+    <div class="flex flex-row">
+      <div>
+        <div use:viewTracks={domainId} on:protvista-click={selectFragment} class="pdbe-protvista-wrapper"></div>
+      </div>
+      <div class="relative">
+        <div class="absolute top-4 left-4 z-10 text-xl">{modeLabel}</div>
+        <div use:viewStructure={domainId} class="ngl-wrapper"></div>
+      </div>
     </div>
   </div>
 </div>

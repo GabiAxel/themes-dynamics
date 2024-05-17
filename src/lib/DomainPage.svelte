@@ -6,7 +6,7 @@
 
 </script>
 
-<div class="xl:container center mx-auto h-full max-w-screen-2xl flex flex-row">
+<div class="h-full flex flex-row">
   <SideMenu domainId={domainId}/>
   <DynamicDomainsAndThemes domainId={domainId}/>
 </div>
