@@ -30,6 +30,7 @@ all_rgb = [
 
 public_path = Path('public')
 
+
 def process_domain(xlsx_path: Path):
 
     dir = xlsx_path.parent
@@ -48,7 +49,7 @@ def process_domain(xlsx_path: Path):
     pm(f'load "{pdb_path.absolute()}"; orient')
 
     pm(f'spectrum count, rainbow, {domain}')
-    pm('ray 300, 300')
+    pm('ray 200, 200')
     thumbnail_path = (public_path / 'thumbnail' / f'{domain}.png').absolute()
     pm(f'png {thumbnail_path}')
 
