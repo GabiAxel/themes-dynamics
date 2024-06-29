@@ -23,7 +23,7 @@
   <div  class="text-left">
     <p>
       This website contains the aggregated analysis results of 150 ECOD domains<sup>1</sup>.
-      Each ECOD domain's page lists the dynamic domains for the top normal modes<sup>2</sup>,
+      Each ECOD domain's page lists the dynamic elements for the top normal modes<sup>2</sup>,
       themes<sup>3</sup>, and Pfam annotations<sup>4</sup> along the ECOD domain sequence and structure.
       The analysis results and PyMOL sessions can be downloaded for each ECOD domain.
     </p>
@@ -35,7 +35,7 @@
       <li class="mt-2">Mistry, Jaina, et al. "Pfam: The protein families database in 2021." <i>Nucleic acids research</i> 49.D1 (2021): D412-D419.</li>
     </ol>
   </div>
-  <p class="text-2xl mt-20">Select an ECOD domain to view its dynamic domains, themes and Pfam annotations</p>
+  <p class="text-2xl mt-20">Select an ECOD domain to view its dynamic elements, themes and Pfam annotations</p>
   {#each domainNavigation as group}
     <h3 class="text-xl mt-10">{group.groupName}</h3>
     <div>
